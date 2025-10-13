@@ -65,6 +65,13 @@ export default function ArticlePage() {
         <meta name="twitter:title" content={seoTitle} />
         <meta name="twitter:description" content={seoDescription} />
         {seoImage && <meta name="twitter:image" content={seoImage.url} />}
+
+        {/* JSON-LD Structured Data */}
+        {article.jsonLd && (
+          <script type="application/ld+json">
+            {article.jsonLd}
+          </script>
+        )}
       </Helmet>
 
       {/* Breadcrumb */}

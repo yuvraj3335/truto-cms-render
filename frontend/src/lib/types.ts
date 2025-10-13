@@ -197,6 +197,7 @@ export interface Article {
   tags?: Array<{ id: string; name: string }>
   categories?: Array<{ id: string; name: string }>
   status?: 'draft' | 'published'
+  jsonLd?: string
   seo?: {
     title?: string
     description?: string
@@ -285,6 +286,7 @@ export interface BackendArticleData {
   tags?: Array<{ id: string; name: string }>
   categories?: Array<{ id: string; name: string }>
   status?: 'draft' | 'published'
+  jsonLd?: string
   seo?: {
     title?: string
     description?: string
