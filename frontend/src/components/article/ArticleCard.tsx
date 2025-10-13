@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import type { ArticleListItem } from '../../lib/types'
+import { getImageUrl } from '../../lib/utils'
 
 interface ArticleCardProps {
   article: ArticleListItem
@@ -36,7 +37,7 @@ function ArticleCardComponent({ article }: ArticleCardProps) {
       <div className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 ${iconColor} rounded-lg flex items-center justify-center transition-shadow`}>
         {article.featuredImage ? (
           <img
-            src={article.featuredImage.url}
+            src={getImageUrl(article.featuredImage.url)}
             alt={article.featuredImage.alt || article.title}
             className="w-full h-full object-cover rounded-lg"
             loading="lazy"

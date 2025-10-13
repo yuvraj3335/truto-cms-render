@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { User } from 'lucide-react'
 import type { Article, Media, User as UserType } from '../../lib/types'
-import { formatDate } from '../../lib/utils'
+import { formatDate, getImageUrl } from '../../lib/utils'
 
 interface ArticleHeaderProps {
   article: Article
@@ -50,7 +50,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
                 <div className="flex items-center gap-3">
                   {author?.avatar && typeof author.avatar !== 'string' ? (
                     <img
-                      src={author.avatar.url}
+                      src={getImageUrl(author.avatar.url)}
                       alt={author.name || author.email}
                       className="w-10 h-10 rounded-full"
                     />
@@ -93,7 +93,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
             {featuredImage && (
               <div className="mb-8">
                 <img
-                  src={featuredImage.url}
+                  src={getImageUrl(featuredImage.url)}
                   alt={featuredImage.alt || article.title}
                   className="w-full h-auto max-h-[400px] object-cover rounded-xl"
                   loading="eager"

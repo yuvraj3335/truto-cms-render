@@ -1,5 +1,6 @@
 import React, { memo, lazy, Suspense } from 'react'
 import { buildTextStyles } from '../../lib/lexical-styles'
+import { getImageUrl } from '../../lib/utils'
 
 // Lazy load syntax highlighter to reduce bundle size
 const SyntaxHighlighter = lazy(() =>
@@ -228,10 +229,12 @@ function ImageBlock({ fields }: { fields: any }) {
 
   if (!image || !image.url) return null
 
+  const imageUrl = getImageUrl(image.url)
+
   return (
     <figure className={`my-10 ${fields.position === 'center' ? 'text-center' : ''}`}>
       <img
-        src={image.url}
+        src={imageUrl}
         alt={image.alt || fields.caption || ''}
         loading="lazy"
         className="rounded-xl shadow-md max-w-full h-auto hover:shadow-lg transition-shadow duration-300"
