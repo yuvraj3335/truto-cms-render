@@ -123,7 +123,7 @@ export default function GuidesListPage() {
             </div>
 
             {/* Guide List */}
-            <div className="divide-y divide-gray-100">
+            <div className="p-4 space-y-4">
               {filteredGuides.length > 0 ? (
                 filteredGuides.map((guide) => (
                   <GuideCard key={guide.id} guide={guide} />
@@ -136,12 +136,12 @@ export default function GuidesListPage() {
             </div>
 
             {/* Support Note */}
-            <div className="p-6 bg-gray-50 border-t border-gray-100 text-center">
+            <div className="p-6 bg-gray-50 border-t border-gray-200 text-center">
               <p className="text-gray-600">
                 Have questions?{' '}
                 <a
                   href="mailto:support@clonepartner.com"
-                  className="text-blue-600 hover:text-blue-700 font-medium underline underline-offset-2 transition-colors"
+                  className="text-blue-600 hover:underline transition-colors"
                 >
                   Write to us at support@clonepartner.com
                 </a>

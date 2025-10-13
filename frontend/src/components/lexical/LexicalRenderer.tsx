@@ -77,7 +77,7 @@ const TextNode = memo(({ node }: { node: LexicalNode }) => {
     const format = node.format
 
     // Apply formatting in correct order
-    if (format & 16) element = <code className="font-mono text-sm bg-gray-100 px-1 rounded">{element}</code> // Code
+    if (format & 16) element = <code className="font-mono text-sm bg-yellow-200 text-yellow-900 px-1 rounded">{element}</code> // Code
     if (format & 1) element = <strong className="font-bold">{element}</strong> // Bold
     if (format & 2) element = <em className="italic">{element}</em> // Italic
     if (format & 8) element = <u className="underline">{element}</u> // Underline

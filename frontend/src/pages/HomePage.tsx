@@ -61,7 +61,7 @@ export default function HomePage() {
     return (
       <>
         <Helmet>
-          <title>ClonePartner Articles</title>
+          <title>ClonePartner Guides</title>
           <meta name="description" content="Read our latest articles and guides" />
         </Helmet>
         <div className="bg-gray-50 min-h-screen">
@@ -96,7 +96,7 @@ export default function HomePage() {
           <div className="text-center mb-10">
             {/* Title */}
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              ClonePartner Articles
+              ClonePartner Guides
             </h1>
           </div>
 
@@ -125,7 +125,7 @@ export default function HomePage() {
             </div>
 
             {/* Article List */}
-            <div className="divide-y divide-gray-100">
+            <div className="p-4 space-y-4">
               {filteredArticles.length > 0 ? (
                 filteredArticles.map((article) => (
                   <ArticleCard key={article.id} article={article} />
@@ -138,12 +138,12 @@ export default function HomePage() {
             </div>
 
             {/* Support Note */}
-            <div className="p-6 bg-gray-50 border-t border-gray-100 text-center">
+            <div className="p-6 bg-gray-50 border-t border-gray-200 text-center">
               <p className="text-gray-600">
                 Have questions?{' '}
                 <a
                   href="mailto:support@clonepartner.com"
-                  className="text-blue-600 hover:text-blue-700 font-medium underline underline-offset-2 transition-colors"
+                  className="text-blue-600 hover:underline transition-colors"
                 >
                   Write to us at support@clonepartner.com
                 </a>

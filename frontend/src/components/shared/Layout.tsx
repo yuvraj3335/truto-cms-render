@@ -27,11 +27,14 @@ export function Layout({ children }: LayoutProps) {
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
               aria-label="ClonePartner Home"
             >
-              <img 
-                src={BrandLogo} 
-                alt="ClonePartner Logo" 
+              <img
+                src={BrandLogo}
+                alt="ClonePartner Logo"
                 className="h-7"
               />
+              <span className="text-lg font-semibold text-black">
+                Clone Partner
+              </span>
             </Link>
 
             {/* Talk to us button */}

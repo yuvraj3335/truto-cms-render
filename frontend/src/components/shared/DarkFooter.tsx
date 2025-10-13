@@ -91,20 +91,6 @@ export function DarkFooter() {
           </div>
         </div>
 
-        {/* Certifications / Trust Badges */}
-        <div className="mt-12 pt-8 border-t border-gray-800">
-          <div className="flex flex-wrap items-center justify-center gap-6">
-            <div className="px-4 py-2 bg-gray-800/50 rounded-lg">
-              <span className="text-gray-400 text-xs font-semibold">ISO</span>
-            </div>
-            <div className="px-4 py-2 bg-gray-800/50 rounded-lg">
-              <span className="text-gray-400 text-xs font-semibold">SOC</span>
-            </div>
-            <div className="px-4 py-2 bg-gray-800/50 rounded-lg">
-              <span className="text-gray-400 text-xs font-semibold">GDPR</span>
-            </div>
-          </div>
-        </div>
 
         {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-gray-800 text-center">
