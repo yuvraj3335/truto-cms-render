@@ -59,7 +59,7 @@ export function DarkFooter() {
               <li>
                 <a 
                   href="#" 
-                  className="text-sm ext-blue-200 hover:text-blue-300 underline transition-colors"
+                  className="text-sm text-blue-200 hover:text-blue-300 underline transition-colors"
                 >
                   CRM Migration
                 </a>
@@ -67,7 +67,7 @@ export function DarkFooter() {
               <li>
                 <a 
                   href="#" 
-                  className="text-sm ext-blue-200 hover:text-blue-300 underline transition-colors"
+                  className="text-sm text-blue-200 hover:text-blue-300 underline transition-colors"
                 >
                   ATS Migration
                 </a>
@@ -82,7 +82,7 @@ export function DarkFooter() {
               <li>
                 <a 
                   href="#" 
-                  className="text-sm ext-blue-200 hover:text-blue-300 underline transition-colors"
+                  className="text-sm text-blue-200 hover:text-blue-300 underline transition-colors"
                 >
                   Migration Process
                 </a>
@@ -90,7 +90,7 @@ export function DarkFooter() {
               <li>
                 <a 
                   href="#" 
-                  className="text-sm ext-blue-200 hover:text-blue-300 underline transition-colors"
+                  className="text-sm text-blue-200 hover:text-blue-300 underline transition-colors"
                 >
                   Become a Partner
                 </a>
