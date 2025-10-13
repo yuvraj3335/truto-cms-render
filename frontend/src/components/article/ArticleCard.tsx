@@ -30,10 +30,10 @@ function ArticleCardComponent({ article }: ArticleCardProps) {
   return (
     <Link
       to={`/articles/${article.slug}`}
-      className="group flex items-center gap-6 md:gap-8 p-6 md:p-8 hover:bg-gray-50 transition-all duration-200 bg-[#F9F9F9] rounded-lg shadow-sm"
+      className="group flex items-center gap-4 md:gap-5 p-4 md:p-5 hover:bg-gray-50 transition-all duration-200 bg-[#F9F9F9] rounded-lg shadow-sm"
     >
       {/* Icon */}
-      <div className={`flex-shrink-0 w-12 h-12 md:w-14 md:h-14 ${iconColor} rounded-lg flex items-center justify-center transition-shadow`}>
+      <div className={`flex-shrink-0 w-10 h-10 md:w-11 md:h-11 ${iconColor} rounded-lg flex items-center justify-center transition-shadow`}>
         {article.featuredImage ? (
           <img
             src={article.featuredImage.url}
@@ -46,14 +46,14 @@ function ArticleCardComponent({ article }: ArticleCardProps) {
               const parent = e.currentTarget.parentElement
               if (parent && !parent.querySelector('span')) {
                 const letter = document.createElement('span')
-                letter.className = 'text-xl font-bold text-gray-700'
+                letter.className = 'text-base font-bold text-gray-700'
                 letter.textContent = article.title.charAt(0)
                 parent.appendChild(letter)
               }
             }}
           />
         ) : (
-          <span className="text-xl md:text-2xl font-bold text-gray-700">
+          <span className="text-base md:text-lg font-bold text-gray-700">
             {article.title.charAt(0)}
           </span>
         )}
@@ -61,11 +61,11 @@ function ArticleCardComponent({ article }: ArticleCardProps) {
 
       {/* Content */}
       <div className="flex-1 min-w-0 flex flex-col justify-center">
-        <h2 className="text-lg font-semibold text-gray-900 mb-1 line-clamp-1">
+        <h2 className="text-base font-semibold text-gray-900 mb-0.5 line-clamp-1">
           {article.title}
         </h2>
         {article.excerpt && (
-          <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
+          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
             {article.excerpt}
           </p>
         )}
@@ -73,14 +73,14 @@ function ArticleCardComponent({ article }: ArticleCardProps) {
 
       {/* CTA Button */}
       <div className="flex-shrink-0 hidden sm:block ml-auto">
-        <span className="inline-flex items-center gap-2 px-5 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-100 transition-all">
+        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700 hover:bg-gray-100 transition-all">
           View Article
         </span>
       </div>
 
       {/* Mobile: Arrow only */}
       <div className="flex-shrink-0 sm:hidden ml-auto">
-        <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+        <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
       </div>
     </Link>
   )

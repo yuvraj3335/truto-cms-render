@@ -90,42 +90,42 @@ export default function HomePage() {
       <Breadcrumb items={[{ label: 'Articles' }]} />
 
       {/* Main Content */}
-      <div className="bg-gray-50 min-h-screen py-12 lg:py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-gray-50 min-h-screen py-8 lg:py-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header Section */}
-          <div className="text-center mb-10">
+          <div className="text-center mb-6">
             {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
               ClonePartner Guides
             </h1>
           </div>
 
           {/* White Card Container */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             {/* Article Count */}
-            <div className="px-6 pt-6 pb-4">
-              <p className="text-sm text-gray-600">
+            <div className="px-4 pt-4 pb-3">
+              <p className="text-xs text-gray-600">
                 {data.pagination.totalDocs} {data.pagination.totalDocs === 1 ? 'article' : 'articles'}
               </p>
             </div>
 
             {/* Search Bar */}
-            <div className="px-6 pb-6 border-b border-gray-100">
+            <div className="px-4 pb-4 border-b border-gray-100">
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search articles"
                   value={searchQuery}
                   onChange={handleSearchChange}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full pl-10 pr-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   aria-label="Search articles"
                 />
               </div>
             </div>
 
             {/* Article List */}
-            <div className="p-4 space-y-4">
+            <div className="p-3 space-y-3">
               {filteredArticles.length > 0 ? (
                 filteredArticles.map((article) => (
                   <ArticleCard key={article.id} article={article} />
@@ -138,8 +138,8 @@ export default function HomePage() {
             </div>
 
             {/* Support Note */}
-            <div className="p-6 bg-gray-50 border-t border-gray-200 text-center">
-              <p className="text-gray-600">
+            <div className="p-4 bg-gray-50 border-t border-gray-200 text-center">
+              <p className="text-sm text-gray-600">
                 Have questions?{' '}
                 <a
                   href="mailto:support@clonepartner.com"

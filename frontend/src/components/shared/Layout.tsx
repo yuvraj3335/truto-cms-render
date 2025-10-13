@@ -33,7 +33,7 @@ export function Layout({ children }: LayoutProps) {
                 className="h-7"
               />
               <span className="text-lg font-semibold text-black">
-                Clone Partner
+                ClonePartner
               </span>
             </Link>
 
