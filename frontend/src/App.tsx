@@ -8,8 +8,8 @@ import { LoadingSkeleton } from './components/shared/LoadingSkeleton'
 
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./pages/HomePage'))
+const CategoryPage = lazy(() => import('./pages/CategoryPage'))
 const ArticlePage = lazy(() => import('./pages/ArticlePage'))
-const GuidesListPage = lazy(() => import('./pages/GuidesListPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 // Create QueryClient instance with optimized defaults
@@ -35,8 +35,8 @@ function App() {
               <Suspense fallback={<LoadingSkeleton />}>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
+                  <Route path="/categories/:slug" element={<CategoryPage />} />
                   <Route path="/articles/:slug" element={<ArticlePage />} />
-                  <Route path="/guides/attio" element={<GuidesListPage />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </Suspense>

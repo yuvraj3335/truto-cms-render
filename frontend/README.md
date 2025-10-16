@@ -8,7 +8,7 @@ The core application logic resides in `frontend/src/`. Key subdirectories and fi
 
 -   `frontend/src/assets/`: Static assets like images.
 -   `frontend/src/components/`: Reusable UI components.
-    -   `article/`: Components for displaying articles (e.g., `ArticleCard`, `ArticleContent`, `ArticleHeader`).
+    -   `article/`: Components for displaying articles (e.g., `ArticlesList`, `ArticleContent`, `ArticleHeader`).
     -   `lexical/`: Components for rendering Lexical editor output (`LexicalRenderer`).
     -   `shared/`: Generic, reusable UI components (e.g., `ErrorBoundary`, `ErrorMessage`, `Layout`, `LoadingSkeleton`, `Pagination`).
 -   `frontend/src/hooks/`: Custom React hooks for stateful logic.

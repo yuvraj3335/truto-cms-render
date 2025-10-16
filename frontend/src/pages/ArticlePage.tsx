@@ -77,7 +77,7 @@ export default function ArticlePage() {
       {/* Breadcrumb */}
       <Breadcrumb
         items={[
-          { label: 'Articles', href: '/' },
+          { label: 'Guides', href: '/' },
           { label: article.title }
         ]}
       />

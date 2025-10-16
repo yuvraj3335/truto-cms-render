@@ -8,41 +8,40 @@ export interface BreadcrumbItem {
 
 interface BreadcrumbProps {
   items: BreadcrumbItem[]
+  /** use "minimal" for the figma look */
+  variant?: 'minimal' | 'bar'
 }
 
-export function Breadcrumb({ items }: BreadcrumbProps) {
+export function Breadcrumb({ items, variant = 'minimal' }: BreadcrumbProps) {
   if (items.length === 0) return null
 
+  const isMinimal = variant === 'minimal'
+
   return (
-    <nav 
-      className="bg-white border-b border-gray-200" 
+    <nav
       aria-label="Breadcrumb"
+      className={isMinimal ? 'border-b border-gray-200/80 bg-transparent' : 'bg-white border-b border-gray-200'}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <ol className="flex items-center gap-2 text-sm" role="list">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <ol
+          role="list"
+          className={
+            isMinimal
+              ? 'flex items-center gap-1 sm:gap-2 py-3 text-xs sm:text-sm text-gray-500'
+              : 'flex items-center gap-2 py-3 text-sm'
+          }
+        >
           {items.map((item, index) => {
             const isLast = index === items.length - 1
-
             return (
-              <li key={index} className="flex items-center gap-2">
-                {index > 0 && (
-                  <ChevronRight 
-                    className="w-4 h-4 text-gray-400" 
-                    aria-hidden="true"
-                  />
-                )}
+              <li key={index} className="flex items-center gap-1 sm:gap-2">
+                {index > 0 && <ChevronRight className="w-4 h-4 text-gray-300" aria-hidden="true" />}
                 {isLast ? (
-                  <span 
-                    className="text-gray-900 font-medium" 
-                    aria-current="page"
-                  >
+                  <span className="text-gray-500" aria-current="page">
                     {item.label}
                   </span>
                 ) : item.href ? (
-                  <Link
-                    to={item.href}
-                    className="text-gray-500 hover:text-gray-700 transition-colors"
-                  >
+                  <Link to={item.href} className="text-gray-500 hover:text-gray-700 transition-colors">
                     {item.label}
                   </Link>
                 ) : (
@@ -56,4 +55,3 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
     </nav>
   )
 }
-

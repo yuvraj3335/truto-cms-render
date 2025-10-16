@@ -293,3 +293,61 @@ export interface BackendArticleData {
     image?: Media | string
   }
 }
+
+// Category types
+export interface Category {
+  id: string | number
+  name: string
+  slug: string
+  description?: string
+  coverImage?: Media
+  articleCount?: number
+  articles?: ArticleListItem[]
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface CategoryListResponse {
+  success: boolean
+  data: Category[]
+  pagination: PaginationMeta
+}
+
+export interface CategoryDetailResponse {
+  success: boolean
+  category: Category
+  articles: ArticleListItem[]
+  pagination: PaginationMeta
+}
+
+export interface CategoryListParams {
+  page?: number
+  limit?: number
+  includeArticles?: boolean
+}
+
+// Backend response types for categories
+export interface BackendCategoryData {
+  id: string | number
+  name: string
+  slug: string
+  description?: string
+  coverImage?: Media | number
+  articleCount?: number
+  articles?: BackendArticleData[]
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface BackendCategoryListResponse {
+  success: boolean
+  data: BackendCategoryData[]
+  pagination: PaginationMeta
+}
+
+export interface BackendCategoryDetailResponse {
+  success: boolean
+  category: BackendCategoryData
+  articles: BackendArticleData[]
+  pagination: PaginationMeta
+}
