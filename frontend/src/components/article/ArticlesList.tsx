@@ -17,7 +17,7 @@ function ArticlesListComponent({ articles, headerText }: ArticlesListProps) {
       <section className="w-full max-w-[1046px] mx-auto bg-white rounded-xl overflow-hidden shadow-[0_2px_4px_0_rgba(0,0,0,0.05),0_0_1px_0_rgba(0,0,0,0.25)]">
         {/* Top header strip */}
         <div className="h-[74px] px-8 py-6 border-t border-b border-[#3535371A] flex items-center">
-          <span className="text-sm leading-[26px] text-gray-600 font-sans">
+          <span className="text-sm leading-[26px] text-gray-600">
             {headerText}
           </span>
         </div>
@@ -51,11 +51,11 @@ function ArticlesListComponent({ articles, headerText }: ArticlesListProps) {
 
                 {/* Content block */}
                 <div className="flex-1 max-w-[700px]">
-                  <h3 className="text-[22px] leading-[28px] font-semibold text-gray-600 mb-1 line-clamp-2 font-sans">
+                  <h3 className="font-sans text-[20px] leading-[26px] font-normal text-gray-600 mb-1 line-clamp-2 tracking-normal">
                     {article.title}
                   </h3>
                   {article.excerpt && (
-                    <p className="text-sm leading-[22px] text-gray-400 line-clamp-2 font-sans">
+                    <p className="font-sans text-[14px] leading-[20px] font-normal text-gray-400 line-clamp-2 tracking-normal">
                       {article.excerpt}
                     </p>
                   )}
@@ -81,7 +81,7 @@ function ArticlesListComponent({ articles, headerText }: ArticlesListProps) {
 
         {/* Footer strip */}
         <div className="h-[74px] px-8 py-6 border-t border-[#3535371A] flex items-center">
-          <p className="text-sm leading-[26px] text-gray-600 font-sans">
+          <p className="text-sm leading-[26px] text-gray-600">
             Have questions? Write to us on{' '}
             <a
               href="mailto:support@clonepartner.com"

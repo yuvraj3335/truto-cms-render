@@ -30,7 +30,7 @@ export function LexicalRenderer({ content }: LexicalRendererProps) {
   }
 
   return (
-    <div className="lexical-content prose prose-lg lg:prose-xl max-w-none">
+    <div className="lexical-content">
       {content.root.children.map((node, index) => (
         <LexicalNode key={index} node={node} />
       ))}
@@ -102,11 +102,11 @@ const TextNode = memo(({ node }: { node: LexicalNode }) => {
 
 const ParagraphNode = memo(({ node }: { node: LexicalNode }) => {
   if (!node.children || node.children.length === 0) {
-    return <p className="my-5">&nbsp;</p>
+    return <p className="my-6">&nbsp;</p>
   }
 
   return (
-    <p className="my-5 leading-[1.75] text-gray-800 text-base md:text-lg">
+    <p className="my-6 leading-relaxed text-gray-700 text-base">
       {node.children.map((child: LexicalNode, index: number) => (
         <LexicalNode key={index} node={child} />
       ))}
@@ -117,12 +117,12 @@ const ParagraphNode = memo(({ node }: { node: LexicalNode }) => {
 const HeadingNode = memo(({ node }: { node: LexicalNode }) => {
   const Tag = (node.tag || 'h2') as keyof JSX.IntrinsicElements
   const classNames = {
-    h1: 'text-3xl md:text-4xl font-bold mt-12 mb-5 text-gray-900 tracking-tight scroll-mt-24',
-    h2: 'text-2xl md:text-3xl font-bold mt-10 mb-4 text-gray-900 tracking-tight scroll-mt-24',
-    h3: 'text-xl md:text-2xl font-semibold mt-8 mb-3 text-gray-900 tracking-tight scroll-mt-24',
-    h4: 'text-lg md:text-xl font-semibold mt-7 mb-3 text-gray-900 scroll-mt-24',
-    h5: 'text-base md:text-lg font-semibold mt-6 mb-2 text-gray-900 scroll-mt-24',
-    h6: 'text-base font-semibold mt-5 mb-2 text-gray-900 scroll-mt-24',
+    h1: 'text-3xl md:text-4xl font-bold mt-16 mb-6 text-gray-900 tracking-tight scroll-mt-24',
+    h2: 'text-2xl md:text-3xl font-bold mt-14 mb-5 text-gray-900 tracking-tight scroll-mt-24',
+    h3: 'text-xl md:text-2xl font-semibold mt-12 mb-4 text-gray-900 tracking-tight scroll-mt-24',
+    h4: 'text-lg md:text-xl font-semibold mt-10 mb-3 text-gray-900 scroll-mt-24',
+    h5: 'text-base md:text-lg font-semibold mt-8 mb-3 text-gray-900 scroll-mt-24',
+    h6: 'text-base font-semibold mt-6 mb-2 text-gray-900 scroll-mt-24',
   }
 
   return (
@@ -137,8 +137,8 @@ const HeadingNode = memo(({ node }: { node: LexicalNode }) => {
 const ListNode = memo(({ node }: { node: LexicalNode }) => {
   const Tag = node.tag === 'ol' ? 'ol' : 'ul'
   const className = Tag === 'ol'
-    ? 'list-decimal list-inside my-4 space-y-2'
-    : 'list-disc list-inside my-4 space-y-2'
+    ? 'list-decimal list-outside my-6 space-y-3 pl-6 text-gray-700'
+    : 'list-disc list-outside my-6 space-y-3 pl-6 text-gray-700'
 
   return (
     <Tag className={className} style={{ marginLeft: `${(node.indent || 0) * 2}rem` }}>
@@ -151,7 +151,7 @@ const ListNode = memo(({ node }: { node: LexicalNode }) => {
 
 const ListItemNode = memo(({ node }: { node: LexicalNode }) => {
   return (
-    <li className="ml-4">
+    <li className="ml-2 leading-relaxed">
       {node.children?.map((child: LexicalNode, index: number) => (
         <LexicalNode key={index} node={child} />
       ))}

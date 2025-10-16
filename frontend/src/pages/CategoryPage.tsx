@@ -65,6 +65,13 @@ export default function CategoryPage() {
 
       {/* Articles Section */}
       <div className="bg-gray-50 pt-8 lg:pt-12 pb-16 lg:pb-20">
+        {/* Page Header */}
+        <div className="max-w-[1046px] mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+          <h1 className="text-[40px] font-medium leading-[111%] tracking-[-0.02em] text-gray-900 text-center">
+            Clonepartner guides for {category.name}
+          </h1>
+        </div>
+
         {articles.length === 0 ? (
           <div className="max-w-[1046px] mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-xl shadow-sm p-16 text-center">

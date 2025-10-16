@@ -68,8 +68,8 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
     <section className="w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
       {/* Header */}
       <div className="mb-6 lg:mb-8">
-        {/* New font + color (Figma-like) */}
-        <h1 className="font-display text-[40px] md:text-[48px] font-extrabold tracking-tight text-neutral-900">
+        {/* T1 Typography: 400 weight, 112% line-height */}
+        <h1 className="text-[64px] font-normal leading-[112%] tracking-normal text-gray-900">
           Guides
         </h1>
         <p className="text-neutral-500 text-base">

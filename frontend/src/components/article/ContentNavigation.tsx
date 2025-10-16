@@ -72,31 +72,17 @@ export function ContentNavigation({ inSidebar = false }: ContentNavigationProps)
             key={heading.id}
             onClick={() => scrollToHeading(heading.id)}
             className={`
-              w-full text-left py-2 px-3 rounded-lg text-sm transition-all
-              hover:bg-gray-50
+              w-full text-left py-1.5 text-sm transition-colors
               ${activeId === heading.id
-                ? 'text-blue-600 font-medium bg-blue-50'
+                ? 'text-gray-900 font-semibold'
                 : 'text-gray-600 hover:text-gray-900'
               }
             `}
-            style={{ paddingLeft: `${0.75 + (heading.level - 1) * 0.5}rem` }}
+            style={{ paddingLeft: `${(heading.level - 1) * 0.75}rem` }}
           >
             <span className="line-clamp-2">{heading.text}</span>
           </button>
         ))}
-        
-        {/* Progress indicator */}
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <div className="text-xs text-gray-500 mb-2">Progress</div>
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-full transition-all duration-300"
-              style={{
-                width: `${headings.length > 0 ? ((headings.findIndex((h) => h.id === activeId) + 1) / headings.length) * 100 : 0}%`,
-              }}
-            />
-          </div>
-        </div>
       </nav>
     )
   }
@@ -156,19 +142,6 @@ export function ContentNavigation({ inSidebar = false }: ContentNavigationProps)
             </button>
           ))}
         </nav>
-
-        {/* Progress indicator */}
-        <div className="mt-5 pt-4 border-t border-gray-100">
-          <div className="text-xs text-gray-500 mb-2">Progress</div>
-          <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-blue-600 to-purple-600 rounded-full transition-all duration-300"
-              style={{
-                width: `${headings.length > 0 ? ((headings.findIndex((h) => h.id === activeId) + 1) / headings.length) * 100 : 0}%`,
-              }}
-            />
-          </div>
-        </div>
       </div>
     </>
   )

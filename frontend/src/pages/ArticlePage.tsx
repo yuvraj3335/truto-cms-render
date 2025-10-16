@@ -82,9 +82,13 @@ export default function ArticlePage() {
         ]}
       />
 
-      <div className="bg-gray-50 min-h-screen">
-        <ArticleHeader article={article} />
-        <ArticleContent content={article.content} />
+      <div className="bg-gray-50 min-h-screen py-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <ArticleHeader article={article} />
+            <ArticleContent content={article.content} featuredImage={featuredImage} />
+          </div>
+        </div>
       </div>
 
       <DarkFooter />

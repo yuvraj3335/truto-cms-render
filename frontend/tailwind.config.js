@@ -6,11 +6,15 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Instrument Sans', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+      },
       typography: {
         DEFAULT: {
           css: {
             maxWidth: 'none',
             color: '#374151',
+            fontFamily: 'Instrument Sans, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif',
             a: {
               color: '#3b82f6',
               '&:hover': {
