@@ -12,14 +12,54 @@ const SyntaxHighlighter = lazy(() =>
 interface LexicalNode {
   type: string
   version?: number
-  [key: string]: any
+  text?: string
+  format?: number
+  detail?: number
+  mode?: string
+  style?: string
+  state?: Record<string, string>
+  children?: LexicalNode[]
+  direction?: 'ltr' | 'rtl'
+  tag?: string
+  url?: string
+  rel?: string
+  target?: string
+  title?: string
+  language?: string
+  indent?: number
+  fields?: BlockFields
+}
+
+interface BlockFields {
+  blockType?: string
+  image?: {
+    url: string
+    alt?: string
+  }
+  caption?: string
+  position?: string
+  type?: string
+  title?: string
+  content?: string
+  bordered?: boolean
+  headers?: Array<string | { header: string }>
+  rows?: Array<string[] | { id?: string; cells?: Array<{ id: string; content: string }> }>
+  striped?: boolean
+  items?: Array<{ title: string; content: string }>
+  quote?: string
+  author?: string
+  authorTitle?: string
 }
 
 interface LexicalRendererProps {
   content: {
     root: {
       children: LexicalNode[]
-      [key: string]: any
+      type?: string
+      direction?: 'ltr' | 'rtl' | null
+      format?: string
+      indent?: number
+      version?: number
     }
   }
 }
@@ -70,7 +110,7 @@ const LexicalNode = memo(({ node }: { node: LexicalNode }) => {
 })
 
 const TextNode = memo(({ node }: { node: LexicalNode }) => {
-  let text = node.text || ''
+  const text = node.text || ''
   let element: React.ReactNode = text
 
   // Handle text formatting with bitwise flags
@@ -170,7 +210,7 @@ const QuoteNode = memo(({ node }: { node: LexicalNode }) => {
 })
 
 const CodeNode = memo(({ node }: { node: LexicalNode }) => {
-  const code = node.children?.map((c: any) => c.text).join('') || ''
+  const code = node.children?.map((c) => c.text || '').join('') || ''
 
   return (
     <div className="my-4">
@@ -203,7 +243,7 @@ const LinkNode = memo(({ node }: { node: LexicalNode }) => {
 })
 
 // Handle Payload custom blocks
-function BlockNode({ fields }: { fields: any }) {
+function BlockNode({ fields }: { fields: BlockFields }) {
   const blockType = fields.blockType
 
   switch (blockType) {
@@ -224,7 +264,7 @@ function BlockNode({ fields }: { fields: any }) {
   }
 }
 
-function ImageBlock({ fields }: { fields: any }) {
+function ImageBlock({ fields }: { fields: BlockFields }) {
   const image = fields.image
 
   if (!image || !image.url) return null
@@ -248,7 +288,7 @@ function ImageBlock({ fields }: { fields: any }) {
   )
 }
 
-function CalloutBlock({ fields }: { fields: any }) {
+function CalloutBlock({ fields }: { fields: BlockFields }) {
   const typeStyles = {
     info: 'bg-blue-50 border-blue-500 text-blue-900',
     warning: 'bg-yellow-50 border-yellow-500 text-yellow-900',
@@ -269,7 +309,7 @@ function CalloutBlock({ fields }: { fields: any }) {
   )
 }
 
-function TableBlock({ fields }: { fields: any }) {
+function TableBlock({ fields }: { fields: BlockFields }) {
   return (
     <div className="my-8 overflow-x-auto">
       <table className={`w-full border-collapse ${fields.bordered ? 'border border-gray-300' : ''}`}>
@@ -277,7 +317,7 @@ function TableBlock({ fields }: { fields: any }) {
           <thead className="bg-gray-100">
             <tr>
               {/* Handle both string[] and object[] formats for headers */}
-              {fields.headers.map((header: any, i: number) => (
+              {fields.headers.map((header, i) => (
                 <th key={i} className="border px-4 py-2 text-left font-semibold">
                   {typeof header === 'string' ? header : header.header}
                 </th>
@@ -286,16 +326,16 @@ function TableBlock({ fields }: { fields: any }) {
           </thead>
         )}
         <tbody>
-          {fields.rows?.map((row: any, rowIndex: number) => (
-            <tr key={row.id || rowIndex} className={fields.striped && rowIndex % 2 === 1 ? 'bg-gray-50' : ''}>
+          {fields.rows?.map((row, rowIndex) => (
+            <tr key={Array.isArray(row) ? rowIndex : row.id || rowIndex} className={fields.striped && rowIndex % 2 === 1 ? 'bg-gray-50' : ''}>
               {/* Handle both string[] and object[] formats for rows */}
               {Array.isArray(row)
-                ? row.map((cell: string, j: number) => (
+                ? row.map((cell, j) => (
                     <td key={j} className="border px-4 py-2">
                       {cell}
                     </td>
                   ))
-                : row.cells?.map((cell: any) => (
+                : 'cells' in row && row.cells?.map((cell) => (
                     <td key={cell.id} className="border px-4 py-2">
                       {cell.content}
                     </td>
@@ -309,7 +349,7 @@ function TableBlock({ fields }: { fields: any }) {
   )
 }
 
-function AccordionBlock({ fields }: { fields: any }) {
+function AccordionBlock({ fields }: { fields: BlockFields }) {
   const [openIndex, setOpenIndex] = React.useState<number | null>(null)
 
   const toggleItem = (index: number) => {
@@ -318,7 +358,7 @@ function AccordionBlock({ fields }: { fields: any }) {
 
   return (
     <div className="my-8 space-y-4">
-      {fields.items?.map((item: any, index: number) => (
+      {fields.items?.map((item, index) => (
         <div key={index} className="border border-gray-200 rounded-lg">
           <button
             onClick={() => toggleItem(index)}
@@ -338,7 +378,7 @@ function AccordionBlock({ fields }: { fields: any }) {
   )
 }
 
-function QuoteBlock({ fields }: { fields: any }) {
+function QuoteBlock({ fields }: { fields: BlockFields }) {
   return (
     <blockquote className="border-l-4 border-gray-400 pl-6 italic my-8 text-lg">
       <p className="text-gray-800">"{fields.quote}"</p>

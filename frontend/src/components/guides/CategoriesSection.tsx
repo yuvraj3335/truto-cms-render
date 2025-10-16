@@ -1,4 +1,4 @@
-import { memo, useState, useRef, useEffect } from 'react'
+import { memo, useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useCategoryList } from '../../hooks/useCategoryList'
 import { CategoryCard } from './CategoryCard'
@@ -26,7 +26,7 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false)
       }
@@ -35,40 +35,62 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const handleCategoryClick = (slug: string) => {
-    if (onCategoryClick) onCategoryClick(slug)
-    else navigate(`/categories/${slug}`)
-  }
+  // Memoize handlers
+  const handleCategoryClick = useCallback((slug: string) => {
+    if (onCategoryClick) {
+      onCategoryClick(slug)
+    } else {
+      navigate(`/categories/${slug}`)
+    }
+  }, [onCategoryClick, navigate])
 
-  const handlePageChange = (page: number) => {
+  const handlePageChange = useCallback((page: number) => {
     const params = new URLSearchParams(searchParams)
     params.set('page', page.toString())
     setSearchParams(params)
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  }, [searchParams, setSearchParams])
 
-  const handleItemsPerPageChange = (newLimit: number) => {
+  const handleItemsPerPageChange = useCallback((newLimit: number) => {
     const params = new URLSearchParams()
     params.set('page', '1') // Reset to page 1 when changing items per page
     params.set('limit', newLimit.toString())
     setSearchParams(params)
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  }, [setSearchParams])
 
-  const filteredCategories =
-    data?.data.filter((category) => {
+  const handleToggleDropdown = useCallback(() => {
+    setIsDropdownOpen(prev => !prev)
+  }, [])
+
+  const handleSelectCategory = useCallback((slug: string | null) => {
+    setSelectedCategory(slug)
+    setIsDropdownOpen(false)
+  }, [])
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value)
+  }, [])
+
+  // Memoize filtered categories
+  const filteredCategories = useMemo(() => {
+    if (!data?.data) return []
+    
+    return data.data.filter((category) => {
       const q = searchQuery.toLowerCase()
       const matchesSearch =
         category.name.toLowerCase().includes(q) ||
         category.description?.toLowerCase().includes(q)
       const matchesCategory = selectedCategory === null || category.slug === selectedCategory
       return matchesSearch && matchesCategory
-    }) || []
+    })
+  }, [data?.data, searchQuery, selectedCategory])
 
-  const selectedCategoryName =
-    selectedCategory === null
-      ? 'All Categories'
-      : data?.data.find((c) => c.slug === selectedCategory)?.name || 'All Categories'
+  // Memoize selected category name
+  const selectedCategoryName = useMemo(() => {
+    if (selectedCategory === null) return 'All Categories'
+    return data?.data.find((c) => c.slug === selectedCategory)?.name || 'All Categories'
+  }, [selectedCategory, data?.data])
 
   if (error) {
     return (
@@ -102,7 +124,7 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
         <div className="md:flex-shrink-0 relative" ref={dropdownRef}>
           <button
             type="button"
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            onClick={handleToggleDropdown}
             className="inline-flex items-center justify-between gap-2 min-w-[200px] md:min-w-[240px] px-5 py-3 rounded-full border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:border-gray-400 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 transition"
           >
             <span className="truncate">{selectedCategoryName}</span>
@@ -118,10 +140,7 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
             <div className="absolute top-full left-0 mt-2 w-full min-w-[240px] bg-white border border-gray-200 rounded-xl shadow-lg z-50 max-h-[300px] overflow-y-auto">
               <button
                 type="button"
-                onClick={() => {
-                  setSelectedCategory(null)
-                  setIsDropdownOpen(false)
-                }}
+                onClick={() => handleSelectCategory(null)}
                 className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${
                   selectedCategory === null ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
                 }`}
@@ -133,10 +152,7 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
                 <button
                   key={category.id}
                   type="button"
-                  onClick={() => {
-                    setSelectedCategory(category.slug)
-                    setIsDropdownOpen(false)
-                  }}
+                  onClick={() => handleSelectCategory(category.slug)}
                   className={`w-full text-left px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${
                     selectedCategory === category.slug ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
                   }`}
@@ -158,7 +174,7 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
               type="search"
               placeholder="Search…"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
               className="w-full h-11 pl-10 pr-4 rounded-full border border-gray-300 bg-white text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent shadow-sm"
             />
           </div>

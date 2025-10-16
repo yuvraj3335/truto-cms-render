@@ -60,6 +60,22 @@ export async function getArticleBySlug(slug: string): Promise<Article> {
   return transformArticle(response.data)
 }
 
+// Transform backend article data to ArticleListItem format
+function transformArticleListItem(article: BackendArticleData): ArticleListItem {
+  return {
+    id: article.id,
+    title: article.title,
+    slug: article.slug || `article-${article.id}`,
+    excerpt: article.excerpt,
+    author: typeof article.author === 'object' ? article.author?.name : article.author,
+    publishedDate: article.publishedDate || article.publishedAt,
+    featuredImage: typeof article.coverImage === 'object' ? article.coverImage : 
+                   typeof article.featuredImage === 'object' ? article.featuredImage : undefined,
+    createdAt: article.createdAt,
+    updatedAt: article.updatedAt,
+  }
+}
+
 export async function getArticleList(params: ArticleListParams = {}): Promise<ArticleListResponse> {
   const queryParams = new URLSearchParams()
 
@@ -76,21 +92,9 @@ export async function getArticleList(params: ArticleListParams = {}): Promise<Ar
 
   const response = await fetchAPI<{ success: boolean; data: BackendArticleData[]; pagination: PaginationMeta }>(endpoint)
 
-  // Transform the response to match frontend expectations
   return {
     success: response.success,
-    articles: response.data.map((article: BackendArticleData): ArticleListItem => ({
-      id: article.id,
-      title: article.title,
-      slug: article.slug || `article-${article.id}`,
-      excerpt: article.excerpt,
-      author: typeof article.author === 'object' ? article.author?.name : article.author,
-      publishedDate: article.publishedDate || article.publishedAt,
-      featuredImage: typeof article.coverImage === 'object' ? article.coverImage : 
-                     typeof article.featuredImage === 'object' ? article.featuredImage : undefined,
-      createdAt: article.createdAt,
-      updatedAt: article.updatedAt,
-    })),
+    articles: response.data.map(transformArticleListItem),
     pagination: response.pagination,
   }
 }
@@ -104,17 +108,7 @@ function transformCategory(data: BackendCategoryData): Category {
     description: data.description,
     coverImage: typeof data.coverImage === 'object' ? data.coverImage as Media : undefined,
     articleCount: data.articleCount,
-    articles: data.articles?.map((article: BackendArticleData): ArticleListItem => ({
-      id: article.id,
-      title: article.title,
-      slug: article.slug || `article-${article.id}`,
-      excerpt: article.excerpt,
-      author: typeof article.author === 'object' ? article.author?.name : article.author,
-      publishedDate: article.publishedDate || article.publishedAt,
-      featuredImage: typeof article.coverImage === 'object' ? article.coverImage : undefined,
-      createdAt: article.createdAt,
-      updatedAt: article.updatedAt,
-    })),
+    articles: data.articles?.map(transformArticleListItem),
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
   }
@@ -156,17 +150,7 @@ export async function getCategoryBySlug(slug: string, articlesPage: number = 1, 
   return {
     success: response.success,
     category: transformCategory(response.category),
-    articles: response.articles.map((article: BackendArticleData): ArticleListItem => ({
-      id: article.id,
-      title: article.title,
-      slug: article.slug || `article-${article.id}`,
-      excerpt: article.excerpt,
-      author: typeof article.author === 'object' ? article.author?.name : article.author,
-      publishedDate: article.publishedDate || article.publishedAt,
-      featuredImage: typeof article.coverImage === 'object' ? article.coverImage : undefined,
-      createdAt: article.createdAt,
-      updatedAt: article.updatedAt,
-    })),
+    articles: response.articles.map(transformArticleListItem),
     pagination: response.pagination,
   }
 }

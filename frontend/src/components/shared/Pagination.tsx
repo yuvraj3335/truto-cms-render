@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { ChevronDown } from 'lucide-react'
 import type { PaginationMeta } from '../../lib/types'
 
@@ -25,7 +25,7 @@ export function Pagination({
 
   // Close dropdown when clicking outside
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false)
       }
@@ -34,9 +34,8 @@ export function Pagination({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  if (totalPages <= 1 && !onItemsPerPageChange) return null
-
-  const getPageNumbers = () => {
+  // Memoize page numbers calculation
+  const pageNumbers = useMemo(() => {
     const pages: (number | string)[] = []
     const delta = 2 // Number of pages to show on each side of current page
 
@@ -53,7 +52,59 @@ export function Pagination({
     }
 
     return pages
-  }
+  }, [page, totalPages])
+
+  // Memoize handlers
+  const handleToggleDropdown = useCallback(() => {
+    setIsDropdownOpen(prev => !prev)
+  }, [])
+
+  const handleItemsPerPageSelect = useCallback((option: number) => {
+    if (onItemsPerPageChange) {
+      onItemsPerPageChange(option)
+      setIsDropdownOpen(false)
+      setShowCustomInput(false)
+    }
+  }, [onItemsPerPageChange])
+
+  const handleShowCustomInput = useCallback(() => {
+    setShowCustomInput(true)
+    setIsDropdownOpen(false)
+  }, [])
+
+  const handleCustomValueChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setCustomValue(e.target.value)
+  }, [])
+
+  const handleApplyCustomValue = useCallback(() => {
+    const num = parseInt(customValue, 10)
+    if (onItemsPerPageChange && num >= 1 && num <= 100) {
+      onItemsPerPageChange(num)
+      setShowCustomInput(false)
+      setCustomValue('')
+    }
+  }, [customValue, onItemsPerPageChange])
+
+  const handleCancelCustomInput = useCallback(() => {
+    setShowCustomInput(false)
+    setCustomValue('')
+  }, [])
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const num = parseInt(customValue, 10)
+      if (onItemsPerPageChange && num >= 1 && num <= 100) {
+        onItemsPerPageChange(num)
+        setShowCustomInput(false)
+        setCustomValue('')
+      }
+    } else if (e.key === 'Escape') {
+      setShowCustomInput(false)
+      setCustomValue('')
+    }
+  }, [customValue, onItemsPerPageChange])
+
+  if (totalPages <= 1 && !onItemsPerPageChange) return null
 
   return (
     <div className="mt-16">
@@ -64,7 +115,7 @@ export function Pagination({
           <div className="relative" ref={dropdownRef}>
             <button
               type="button"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={handleToggleDropdown}
               className="inline-flex items-center justify-between gap-1.5 min-w-[70px] px-3 py-1.5 rounded-md border border-gray-300 bg-white text-gray-700 text-xs font-medium hover:border-gray-400 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 transition"
             >
               <span>{itemsPerPage}</span>
@@ -82,11 +133,7 @@ export function Pagination({
                   <button
                     key={option}
                     type="button"
-                    onClick={() => {
-                      onItemsPerPageChange(option)
-                      setIsDropdownOpen(false)
-                      setShowCustomInput(false)
-                    }}
+                    onClick={() => handleItemsPerPageSelect(option)}
                     className={`w-full text-center px-3 py-1.5 text-xs hover:bg-gray-50 transition-colors ${
                       option === itemsPerPage && !showCustomInput ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
                     }`}
@@ -97,10 +144,7 @@ export function Pagination({
                 <div className="border-t border-gray-100" />
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowCustomInput(true)
-                    setIsDropdownOpen(false)
-                  }}
+                  onClick={handleShowCustomInput}
                   className="w-full text-center px-3 py-1.5 text-xs text-gray-700 hover:bg-gray-50 transition-colors rounded-b-md"
                 >
                   Custom...
@@ -116,44 +160,22 @@ export function Pagination({
                 min="1"
                 max="100"
                 value={customValue}
-                onChange={(e) => setCustomValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    const num = parseInt(customValue, 10)
-                    if (num >= 1 && num <= 100) {
-                      onItemsPerPageChange(num)
-                      setShowCustomInput(false)
-                      setCustomValue('')
-                    }
-                  } else if (e.key === 'Escape') {
-                    setShowCustomInput(false)
-                    setCustomValue('')
-                  }
-                }}
+                onChange={handleCustomValueChange}
+                onKeyDown={handleKeyDown}
                 placeholder="Enter"
                 className="w-20 px-2 py-1 border border-gray-300 rounded-md text-xs focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                 autoFocus
               />
               <button
                 type="button"
-                onClick={() => {
-                  const num = parseInt(customValue, 10)
-                  if (num >= 1 && num <= 100) {
-                    onItemsPerPageChange(num)
-                    setShowCustomInput(false)
-                    setCustomValue('')
-                  }
-                }}
+                onClick={handleApplyCustomValue}
                 className="px-2 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-1 transition-colors"
               >
                 Apply
               </button>
               <button
                 type="button"
-                onClick={() => {
-                  setShowCustomInput(false)
-                  setCustomValue('')
-                }}
+                onClick={handleCancelCustomInput}
                 className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-md hover:bg-gray-200 focus:outline-none transition-colors"
               >
                 Cancel
@@ -195,7 +217,7 @@ export function Pagination({
 
       {/* Page Numbers */}
       <div className="hidden sm:flex gap-1.5">
-        {getPageNumbers().map((pageNum, index) => {
+        {pageNumbers.map((pageNum, index) => {
           if (pageNum === '...') {
             return (
               <span

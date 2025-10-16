@@ -20,10 +20,7 @@ function CategoryCardComponent({ category, onClick }: CategoryCardProps) {
   const initial = category.name.charAt(0).toUpperCase()
   const cover = category.coverImage?.url ? getImageUrl(category.coverImage.url) : null
   const alt = category.coverImage?.alt || category.name
-  const count =
-    typeof (category as any).articleCount === 'number'
-      ? (category as any).articleCount
-      : 0
+  const count = category.articleCount ?? 0
   const countLabel = `${count} ${count === 1 ? 'Guide' : 'Guides'}`
 
   return (

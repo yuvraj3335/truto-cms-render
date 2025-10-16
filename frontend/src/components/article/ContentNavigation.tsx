@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { List } from 'lucide-react'
 
 interface Heading {
@@ -53,13 +53,21 @@ export function ContentNavigation({ inSidebar = false }: ContentNavigationProps)
     return () => observer.disconnect()
   }, [])
 
-  const scrollToHeading = (id: string) => {
+  const scrollToHeading = useCallback((id: string) => {
     const element = document.getElementById(id)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' })
       setIsOpen(false)
     }
-  }
+  }, [])
+
+  const handleToggleOpen = useCallback(() => {
+    setIsOpen(prev => !prev)
+  }, [])
+
+  const handleCloseOverlay = useCallback(() => {
+    setIsOpen(false)
+  }, [])
 
   if (headings.length === 0) return null
 
@@ -92,7 +100,7 @@ export function ContentNavigation({ inSidebar = false }: ContentNavigationProps)
     <>
       {/* Mobile Toggle Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={handleToggleOpen}
         className="lg:hidden fixed bottom-6 right-6 z-50 bg-white p-4 rounded-full shadow-lg hover:shadow-xl border border-gray-200 hover:scale-105 transition-all"
         aria-label="Toggle content navigation"
       >
@@ -103,7 +111,7 @@ export function ContentNavigation({ inSidebar = false }: ContentNavigationProps)
       {isOpen && (
         <div
           className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
-          onClick={() => setIsOpen(false)}
+          onClick={handleCloseOverlay}
         />
       )}
 

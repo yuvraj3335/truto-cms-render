@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useCategoryBySlug } from '../hooks/useCategoryBySlug'
@@ -21,6 +22,22 @@ export default function CategoryPage() {
     error,
     refetch 
   } = useCategoryBySlug(slug || '', currentPage, limit)
+
+  // Define callbacks before early returns (must follow Rules of Hooks)
+  const handlePageChange = useCallback((page: number) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('page', page.toString())
+    setSearchParams(params)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [searchParams, setSearchParams])
+
+  const handleItemsPerPageChange = useCallback((newLimit: number) => {
+    const params = new URLSearchParams()
+    params.set('page', '1') // Reset to page 1 when changing items per page
+    params.set('limit', newLimit.toString())
+    setSearchParams(params)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [setSearchParams])
 
   if (isLoading) {
     return <LoadingSkeleton />
@@ -51,21 +68,6 @@ export default function CategoryPage() {
     { label: 'Guides', href: '/' },
     { label: category.name }
   ]
-
-  const handlePageChange = (page: number) => {
-    const params = new URLSearchParams(searchParams)
-    params.set('page', page.toString())
-    setSearchParams(params)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const handleItemsPerPageChange = (newLimit: number) => {
-    const params = new URLSearchParams()
-    params.set('page', '1') // Reset to page 1 when changing items per page
-    params.set('limit', newLimit.toString())
-    setSearchParams(params)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
 
   return (
     <>

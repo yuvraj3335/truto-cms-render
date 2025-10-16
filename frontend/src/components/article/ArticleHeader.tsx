@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, memo } from 'react'
 import { User } from 'lucide-react'
 import type { Article, User as UserType } from '../../lib/types'
 import { formatDate, getImageUrl } from '../../lib/utils'
@@ -7,7 +7,7 @@ interface ArticleHeaderProps {
   article: Article
 }
 
-export function ArticleHeader({ article }: ArticleHeaderProps) {
+function ArticleHeaderComponent({ article }: ArticleHeaderProps) {
   const author = typeof article.author === 'string' ? null : (article.author as UserType | undefined)
 
   // Calculate reading time based on content (memoized for performance)
@@ -15,7 +15,7 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
     const wordsPerMinute = 200
 
     // Count words from Lexical content
-    const countWords = (node: any): number => {
+    const countWords = (node: { text?: string; children?: unknown[] }): number => {
       if (!node) return 0
 
       if (node.text) {
@@ -23,7 +23,9 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
       }
 
       if (node.children && Array.isArray(node.children)) {
-        return node.children.reduce((count: number, child: any) => count + countWords(child), 0)
+        return node.children.reduce((count: number, child: unknown) => {
+          return count + countWords(child as { text?: string; children?: unknown[] })
+        }, 0)
       }
 
       return 0
@@ -90,3 +92,5 @@ export function ArticleHeader({ article }: ArticleHeaderProps) {
     </div>
   )
 }
+
+export const ArticleHeader = memo(ArticleHeaderComponent)
