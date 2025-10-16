@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { useCategoryBySlug } from '../hooks/useCategoryBySlug'
 import { ArticlesList } from '../components/article/ArticlesList'
 import { LoadingSkeleton } from '../components/shared/LoadingSkeleton'
@@ -7,11 +7,13 @@ import { ErrorMessage } from '../components/shared/ErrorMessage'
 import { DarkFooter } from '../components/shared/DarkFooter'
 import { PreFooterCta } from '../components/shared/PreFooterCta'
 import { Breadcrumb } from '../components/shared/Breadcrumb'
+import { Pagination } from '../components/shared/Pagination'
 
 export default function CategoryPage() {
   const { slug } = useParams<{ slug: string }>()
-  const currentPage = 1
-  const limit = 10
+  const [searchParams, setSearchParams] = useSearchParams()
+  const currentPage = parseInt(searchParams.get('page') || '1', 10)
+  const limit = parseInt(searchParams.get('limit') || '10', 10)
 
   const { 
     data: categoryData, 
@@ -49,6 +51,21 @@ export default function CategoryPage() {
     { label: 'Guides', href: '/' },
     { label: category.name }
   ]
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('page', page.toString())
+    setSearchParams(params)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleItemsPerPageChange = (newLimit: number) => {
+    const params = new URLSearchParams()
+    params.set('page', '1') // Reset to page 1 when changing items per page
+    params.set('limit', newLimit.toString())
+    setSearchParams(params)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   return (
     <>
@@ -90,10 +107,25 @@ export default function CategoryPage() {
             </div>
           </div>
         ) : (
-          <ArticlesList
-            articles={articles}
-            headerText={`${pagination?.totalDocs ?? 0} ${pagination?.totalDocs === 1 ? 'guide' : 'guides'} in ${category.name}`}
-          />
+          <>
+            <ArticlesList
+              articles={articles}
+              headerText={`${pagination?.totalDocs ?? 0} ${pagination?.totalDocs === 1 ? 'guide' : 'guides'} in ${category.name}`}
+            />
+
+            {/* Pagination */}
+            {pagination && (
+              <div className="max-w-[1046px] mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+                <Pagination
+                  pagination={pagination}
+                  onPageChange={handlePageChange}
+                  itemsPerPage={limit}
+                  onItemsPerPageChange={handleItemsPerPageChange}
+                  itemsPerPageOptions={[10, 20, 30, 50]}
+                />
+              </div>
+            )}
+          </>
         )}
       </div>
 

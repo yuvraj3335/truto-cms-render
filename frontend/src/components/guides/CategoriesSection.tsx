@@ -1,7 +1,8 @@
 import { memo, useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useCategoryList } from '../../hooks/useCategoryList'
 import { CategoryCard } from './CategoryCard'
+import { Pagination } from '../shared/Pagination'
 import { ChevronDown, Search } from 'lucide-react'
 
 interface CategoriesSectionProps {
@@ -14,9 +15,12 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const currentPage = parseInt(searchParams.get('page') || '1', 10)
+  const limit = parseInt(searchParams.get('limit') || '12', 10)
   const { data, isLoading, error } = useCategoryList({
-    page: 1,
-    limit: 100,
+    page: currentPage,
+    limit: limit,
     includeArticles: true // keep counts
   })
 
@@ -34,6 +38,21 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
   const handleCategoryClick = (slug: string) => {
     if (onCategoryClick) onCategoryClick(slug)
     else navigate(`/categories/${slug}`)
+  }
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('page', page.toString())
+    setSearchParams(params)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleItemsPerPageChange = (newLimit: number) => {
+    const params = new URLSearchParams()
+    params.set('page', '1') // Reset to page 1 when changing items per page
+    params.set('limit', newLimit.toString())
+    setSearchParams(params)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const filteredCategories =
@@ -174,15 +193,28 @@ function CategoriesSectionComponent({ onCategoryClick }: CategoriesSectionProps)
           <p className="text-gray-600">Try a different search or clear filters.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {filteredCategories.map((category) => (
-            <CategoryCard
-              key={category.id}
-              category={category}
-              onClick={handleCategoryClick}
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+            {filteredCategories.map((category) => (
+              <CategoryCard
+                key={category.id}
+                category={category}
+                onClick={handleCategoryClick}
+              />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {data?.pagination && !searchQuery && !selectedCategory && (
+            <Pagination
+              pagination={data.pagination}
+              onPageChange={handlePageChange}
+              itemsPerPage={limit}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              itemsPerPageOptions={[12, 24, 36, 48]}
             />
-          ))}
-        </div>
+          )}
+        </>
       )}
     </section>
   )
