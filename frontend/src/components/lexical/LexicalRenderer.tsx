@@ -45,10 +45,20 @@ interface BlockFields {
   headers?: Array<string | { header: string }>
   rows?: Array<string[] | { id?: string; cells?: Array<{ id: string; content: string }> }>
   striped?: boolean
-  items?: Array<{ title: string; content: string }>
+  items?: Array<{
+    title?: string
+    content?: string
+    question?: string
+    answer?: string
+    defaultOpen?: boolean
+  }>
+  allowMultiple?: boolean
   quote?: string
   author?: string
   authorTitle?: string
+  url?: string
+  platform?: string
+  aspectRatio?: string
 }
 
 interface LexicalRendererProps {
@@ -255,6 +265,8 @@ function BlockNode({ fields }: { fields: BlockFields }) {
       return <TableBlock fields={fields} />
     case 'accordion':
       return <AccordionBlock fields={fields} />
+    case 'video':
+      return <VideoBlock fields={fields} />
     case 'quote':
     case 'blockQuote':
       return <QuoteBlock fields={fields} />
@@ -279,6 +291,63 @@ function ImageBlock({ fields }: { fields: BlockFields }) {
         loading="lazy"
         className="rounded-xl shadow-md max-w-full h-auto hover:shadow-lg transition-shadow duration-300"
       />
+      {fields.caption && (
+        <figcaption className="mt-3 text-sm text-gray-600 italic text-center">
+          {fields.caption}
+        </figcaption>
+      )}
+    </figure>
+  )
+}
+
+function VideoBlock({ fields }: { fields: BlockFields }) {
+  if (!fields.url) return null
+
+  // Extract video ID based on platform
+  const getVideoEmbedUrl = () => {
+    const url = fields.url!
+    const platform = fields.platform?.toLowerCase() || 'youtube'
+
+    if (platform === 'youtube') {
+      // Handle various YouTube URL formats
+      const youtubeRegex = /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/
+      const match = url.match(youtubeRegex)
+      const videoId = match ? match[1] : url
+      return `https://www.youtube.com/embed/${videoId}`
+    } else if (platform === 'vimeo') {
+      // Handle Vimeo URLs
+      const vimeoRegex = /vimeo\.com\/(?:video\/)?(\d+)/
+      const match = url.match(vimeoRegex)
+      const videoId = match ? match[1] : url
+      return `https://player.vimeo.com/video/${videoId}`
+    }
+
+    // Default: assume it's already an embed URL
+    return url
+  }
+
+  // Get aspect ratio padding
+  const getAspectRatioPadding = () => {
+    const ratio = fields.aspectRatio || '16:9'
+    const [width, height] = ratio.split(':').map(Number)
+    return height && width ? `${(height / width) * 100}%` : '56.25%' // Default to 16:9
+  }
+
+  const embedUrl = getVideoEmbedUrl()
+  const paddingBottom = getAspectRatioPadding()
+
+  return (
+    <figure className="my-10">
+      <div className="relative w-full overflow-hidden rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300" style={{ paddingBottom }}>
+        <iframe
+          src={embedUrl}
+          className="absolute top-0 left-0 w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          loading="lazy"
+          title={fields.caption || 'Video embed'}
+        />
+      </div>
       {fields.caption && (
         <figcaption className="mt-3 text-sm text-gray-600 italic text-center">
           {fields.caption}
@@ -350,30 +419,65 @@ function TableBlock({ fields }: { fields: BlockFields }) {
 }
 
 function AccordionBlock({ fields }: { fields: BlockFields }) {
-  const [openIndex, setOpenIndex] = React.useState<number | null>(null)
+  // Initialize with default open items
+  const [openIndexes, setOpenIndexes] = React.useState<Set<number>>(() => {
+    const defaultOpen = new Set<number>()
+    fields.items?.forEach((item, index) => {
+      if (item.defaultOpen) {
+        defaultOpen.add(index)
+      }
+    })
+    return defaultOpen
+  })
 
   const toggleItem = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index)
+    setOpenIndexes((prev) => {
+      const newSet = new Set(prev)
+      if (newSet.has(index)) {
+        newSet.delete(index)
+      } else {
+        // If allowMultiple is false, clear all other indexes
+        if (!fields.allowMultiple) {
+          newSet.clear()
+        }
+        newSet.add(index)
+      }
+      return newSet
+    })
   }
 
   return (
-    <div className="my-8 space-y-4">
-      {fields.items?.map((item, index) => (
-        <div key={index} className="border border-gray-200 rounded-lg">
-          <button
-            onClick={() => toggleItem(index)}
-            className="w-full px-4 py-3 text-left font-semibold flex justify-between items-center hover:bg-gray-50"
-          >
-            {item.title}
-            <span>{openIndex === index ? '−' : '+'}</span>
-          </button>
-          {openIndex === index && (
-            <div className="px-4 py-3 border-t border-gray-200 bg-gray-50">
-              {item.content}
+    <div className="my-8">
+      {fields.title && (
+        <h3 className="text-xl font-bold mb-4 text-gray-900">{fields.title}</h3>
+      )}
+      <div className="space-y-4">
+        {fields.items?.map((item, index) => {
+          // Support both title/content and question/answer formats
+          const displayTitle = item.question || item.title || ''
+          const displayContent = item.answer || item.content || ''
+          const isOpen = openIndexes.has(index)
+
+          return (
+            <div key={index} className="border border-gray-200 rounded-lg">
+              <button
+                onClick={() => toggleItem(index)}
+                className="w-full px-4 py-3 text-left font-semibold flex justify-between items-center hover:bg-gray-50 transition-colors"
+              >
+                <span className="text-gray-900">{displayTitle}</span>
+                <span className="text-gray-600 text-xl ml-4 flex-shrink-0">
+                  {isOpen ? '−' : '+'}
+                </span>
+              </button>
+              {isOpen && (
+                <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 text-gray-700">
+                  {displayContent}
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      ))}
+          )
+        })}
+      </div>
     </div>
   )
 }
