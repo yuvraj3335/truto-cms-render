@@ -112,50 +112,7 @@ The application is configured to run under the `/guides/` base path. This is set
 ### API Proxy
 
 The development server proxies API requests to:
-- Target: `https://truto-cms.yuvraj-432.workers.dev`
+- Target: backend Which provides the JSON to be rendered
 - Proxy path: `/api`
-
-Configure this in [vite.config.ts:9-15](frontend/vite.config.ts#L9-L15)
-
-## Routes
-
-- `/` - Home page with categories
-- `/categories/:slug` - Category page with articles list
-- `/articles/:slug` - Individual article page
-- `*` - 404 Not Found page
-
-## Performance Optimizations
-
-- **Code Splitting**: Pages are lazy-loaded using React.lazy()
-- **Bundle Optimization**: Separate chunks for React vendor, React Query, and syntax highlighter
-- **Caching**: React Query configured with 5-minute stale time and 10-minute garbage collection
-- **CSS Code Splitting**: Enabled for smaller initial bundle size
-- **Asset Inlining**: Assets smaller than 4KB are inlined
-
-## API Integration
-
-The application fetches content from a CMS backend API with the following endpoints:
-
-- `GET /api/articles` - List articles
-- `GET /api/articles/:slug` - Get single article
-- `GET /api/categories` - List categories
-- `GET /api/categories/:slug` - Get category with articles
-
-## Development Guidelines
-
-### Adding New Pages
-
-1. Create a new page component in `src/pages/`
-2. Add lazy import in [App.tsx](frontend/src/App.tsx)
-3. Add route in the Routes configuration
-
-### Adding New Components
-
-- Shared components: `src/components/shared/`
-- Feature-specific components: `src/components/<feature>/`
-
-### Type Definitions
-
-All TypeScript types are defined in [src/lib/types.ts](frontend/src/lib/types.ts)
 
 
