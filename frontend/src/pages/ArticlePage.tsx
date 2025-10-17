@@ -78,6 +78,9 @@ export default function ArticlePage() {
       <Breadcrumb
         items={[
           { label: 'Guides', href: '/' },
+          ...(article.categories && article.categories.length > 0 && article.categories[0].slug
+            ? [{ label: article.categories[0].name, href: `/categories/${article.categories[0].slug}` }]
+            : []),
           { label: article.title }
         ]}
       />

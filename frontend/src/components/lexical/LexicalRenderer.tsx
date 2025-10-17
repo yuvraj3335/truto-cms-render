@@ -200,6 +200,20 @@ const ListNode = memo(({ node }: { node: LexicalNode }) => {
 })
 
 const ListItemNode = memo(({ node }: { node: LexicalNode }) => {
+  // Check if this list item only contains a nested list (no text content)
+  const hasOnlyNestedList = node.children?.length === 1 && node.children[0].type === 'list'
+
+  // If the list item only contains a nested list, render without the list-item marker
+  if (hasOnlyNestedList) {
+    return (
+      <li className="ml-2 leading-relaxed" style={{ listStyle: 'none', marginLeft: '-0.5rem' }}>
+        {node.children?.map((child: LexicalNode, index: number) => (
+          <LexicalNode key={index} node={child} />
+        ))}
+      </li>
+    )
+  }
+
   return (
     <li className="ml-2 leading-relaxed">
       {node.children?.map((child: LexicalNode, index: number) => (

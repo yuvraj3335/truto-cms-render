@@ -195,7 +195,7 @@ export interface Article {
   featuredImage?: Media | string
   excerpt?: string
   tags?: Array<{ id: string; name: string }>
-  categories?: Array<{ id: string; name: string }>
+  categories?: Array<{ id: string; name: string; slug?: string }>
   status?: 'draft' | 'published'
   jsonLd?: string
   seo?: {
@@ -284,7 +284,7 @@ export interface BackendArticleData {
   featuredImage?: Media | string
   excerpt?: string
   tags?: Array<{ id: string; name: string }>
-  categories?: Array<{ id: string; name: string }>
+  categories?: Array<{ id: string; name: string; slug?: string }>
   status?: 'draft' | 'published'
   jsonLd?: string
   seo?: {
