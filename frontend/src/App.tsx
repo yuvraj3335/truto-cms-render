@@ -30,7 +30,7 @@ function App() {
     <ErrorBoundary>
       <HelmetProvider>
         <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
+          <BrowserRouter basename="/guides">
             <Layout>
               <Suspense fallback={<LoadingSkeleton />}>
                 <Routes>
